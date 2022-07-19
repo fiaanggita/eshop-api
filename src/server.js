@@ -17,11 +17,17 @@ const products = require('./api/products');
 const ProductsValidator = require('./validator/products');
 const ProductsService = require('./services/mysql/ProductService');
 
+// carts
+const carts = require('./api/carts');
+const CartsValidator = require('./validator/carts');
+const CartsService = require('./services/mysql/CartsService');
+
 
 const init = async () => {
     const database = new Database();
     const authenticationService = new AuthenticationService(database);
-    const productsService = new ProductsService(database)
+    const productsService = new ProductsService(database);
+    const service = new CartsService(database);
 
     const server = Hapi.server({
         host: process.env.HOST,
@@ -37,7 +43,7 @@ const init = async () => {
         method: 'GET',
         path: '/',
         handler: () => ({
-            name: 'Rski Mulud Muchamad',
+            name: 'Neng Fia Anggita Zalsabila',
         }),
     });
 
@@ -79,7 +85,14 @@ const init = async () => {
                 service: productsService,
                 validator: ProductsValidator,
             }
-        }
+        },
+        {
+            plugin: carts,
+            options: {
+                service: CartsService,
+                validator: CartsValidator,
+            },
+        },
     ]);
 
     // extension
