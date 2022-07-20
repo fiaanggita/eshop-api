@@ -15,7 +15,7 @@ const InvariantError = require('./exceptions/InvariantError');
 // products
 const products = require('./api/products');
 
-const ProductsValidator = require('./validator/products');
+const ProductsValidator = require('./validator/Products');
 const ProductsService = require('./services/mysql/ProductService');
 const path = require('path');
 
