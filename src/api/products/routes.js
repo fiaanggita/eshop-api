@@ -48,7 +48,18 @@ const routes = (handler) => [
         maxBytes: 512000,
       },
     },
+  },
+
+  {
+    method: 'GET',
+    path: '/products/image/{param*}',
+    handler: {
+      directory: {
+        path: path.resolve(__dirname, 'images')
+      },
+    },
   }
+
 ];
 
 module.exports = routes;
