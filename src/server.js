@@ -4,7 +4,7 @@ const Jwt = require('@hapi/jwt');
 const Inert = require('@hapi/inert');
 
 // authentication
-const authentication = require('./api/authentication');
+const authentication = require('./api/authentication')
 const Database = require('./conf/Database');
 const ClientError = require('./exceptions/ClientError');
 const AuthenticationService = require('./services/mysql/AuthenticationService');
