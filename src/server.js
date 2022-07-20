@@ -31,7 +31,7 @@ const init = async () => {
     const database = new Database();
     const authenticationService = new AuthenticationService(database);
     const productsService = new ProductsService(database);
-    const service = new CartsService(database);
+    const cartsService = new CartsService(database);
     const transactionsService = new TransactionsService(database);
 
     const server = Hapi.server({
@@ -94,7 +94,7 @@ const init = async () => {
         {
             plugin: carts,
             options: {
-                service: CartsService,
+                service: cartsService,
                 validator: CartsValidator,
             },
         },
