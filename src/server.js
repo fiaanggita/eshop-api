@@ -7,13 +7,12 @@ const Inert = require('@hapi/inert');
 const authentication = require('./api/authentication');
 const Database = require('./conf/Database');
 const ClientError = require('./exceptions/ClientError');
-const AuthenticationService = require('./services/mysql/AuthenticationsService');
+const AuthenticationService = require('./services/mysql/AuthenticationService');
 const AuthenticationValidator = require('./validator/authentication');
-const InvariantError = require('./exceptions/InvariantErrror');
 
 // products
 const products = require('./api/products');
-const ProductsService = require('./services/mysql/ProductsService');
+const ProductsService = require('./services/mysql/ProductService');
 const ProductsValidator = require('./validator/products');
 const StorageService = require('./services/storage/StorageService');
 const path = require('path');
@@ -29,34 +28,34 @@ const TransactionsService = require('./services/mysql/TransactionsService');
 
 
 const init = async () => {
- const database = new Database();
- const authenticationService = new AuthenticationService(database);
- const productsService = new ProductsService(database);
- const cartsService = new CartsService(database);
- const transactionsService = new TransactionsService(database);
- const storageService = new StorageService(path.resolve(__dirname + '/api/products/images'));
+  const database = new Database();
+  const authenticationService = new AuthenticationService(database);
+  const productsService = new ProductsService(database);
+  const cartsService = new CartsService(database);
+  const transactionsService = new TransactionsService(database);
+  const storageService = new StorageService(path.resolve(__dirname + '/api/products/images'));
 
 
 
-    const server = Hapi.server({
-      host: process.env.HOST,
-      port: process.env.PORT,
-      routes: {
-        cors: {
-          origin: ['*'],
-        },
+  const server = Hapi.server({
+    host: process.env.HOST,
+    port: process.env.PORT,
+    routes: {
+      cors: {
+        origin: ['*'],
       },
-    });
+    },
+  });
 
-    server.route({
-        method: 'GET',
-        path: '/',
-        handler: () => ({
-          name: 'Rski Mulud Muchamad',
-        }),
-      });
+  server.route({
+    method: 'GET',
+    path: '/',
+    handler: () => ({
+      name: 'Rski Mulud Muchamad',
+    }),
+  });
 
-      // register external plugin
+  // register external plugin
   await server.register([
     {
       plugin: Jwt,
@@ -67,7 +66,7 @@ const init = async () => {
   ]);
 
   // defines authentication strategy
-  server.auth.strategy('eshop_jwt', 'jwt',{
+  server.auth.strategy('eshop_jwt', 'jwt', {
     keys: process.env.TOKEN_KEY,
     verify: {
       aud: false,
@@ -82,43 +81,43 @@ const init = async () => {
     }),
   });
 
-      // defines internal plugins
-      await server.register([
-        {
-            plugin: authentication,
-            options: {
-                service: authenticationService,
-                validator: AuthenticationValidator,
-            }, 
-        },
-        {
-          plugin: products,
-          options: {
-            productsService,
-            storageService,
-            validator: ProductsValidator,
-          },
-        },
+  // defines internal plugins
+  await server.register([
+    {
+      plugin: authentication,
+      options: {
+        service: authenticationService,
+        validator: AuthenticationValidator,
+      },
+    },
+    {
+      plugin: products,
+      options: {
+        productsService,
+        storageService,
+        validator: ProductsValidator,
+      },
+    },
 
-        {
-          plugin: carts,
-          options: {
-            service: cartsService,
-            validator: CartsValidator,
-          },
-        },
+    {
+      plugin: carts,
+      options: {
+        service: cartsService,
+        validator: CartsValidator,
+      },
+    },
 
-        {
-          plugin: transactions,
-          options: {
-            service: transactionsService,
-          },
-        },
-      ]);
+    {
+      plugin: transactions,
+      options: {
+        service: transactionsService,
+      },
+    },
+  ]);
 
-        // extension
+  // extension
   server.ext('onPreResponse', (request, h) => {
-    const {response} = request;
+    const { response } = request;
 
     if (response instanceof ClientError) {
       const newResponse = h.response({
@@ -134,9 +133,9 @@ const init = async () => {
     return h.continue;
   });
 
-      await server.start();
-     console.log(`Server running at ${server.info.uri}`);
+  await server.start();
+  console.log(`Server running at ${server.info.uri}`);
 
-  };
+};
 
-  init();
+init();

@@ -4,8 +4,8 @@ const routes = require('./routes');
 module.exports = {
   name: 'products',
   version: '1.0.0',
-  register: async (server, { ProductsService, storageService, validator }) => {
-    const handler = new ProductsHandler(ProductsService, storageService, validator);
+  register: async (server, { productsService, storageService, validator }) => {
+    const handler = new ProductsHandler(productsService, storageService, validator);
     server.route(routes(handler));
   },
 };
